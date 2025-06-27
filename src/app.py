@@ -15,7 +15,7 @@ engine = create_engine(connection_string)
 
 # ------------------------ Page Config ------------------------
 st.set_page_config(page_title="PhonePe Dashboard", layout="wide")
-st.title("📊 PhonePe Transaction Insights Dashboard")
+st.title(" PhonePe Transaction Insights Dashboard")
 
 # ------------------------ Data Fetch ------------------------
 @st.cache_data
@@ -29,7 +29,7 @@ def load_data():
 df_tx, df_user, df_ins, df_map_tx = load_data()
 
 # ------------------------ KPI Metrics ------------------------
-st.subheader("📌 Key Metrics")
+st.subheader(" Key Metrics")
 
 col1, col2, col3, col4 = st.columns(4)
 col1.metric("Total Transactions", f"{df_tx['transaction_count'].sum():,}")
@@ -40,7 +40,7 @@ col4.metric("Insurance Premiums (₹)", f"{df_ins['insurance_amount'].sum():,.2f
 st.markdown("---")
 
 # ------------------------ Graphs Layout ------------------------
-st.subheader("📈 Data Visualizations")
+st.subheader("Data Visualizations")
 
 # 1. Transaction Amount by State
 fig1 = px.bar(df_tx.groupby("state")[["transaction_amount"]].sum().reset_index(),
