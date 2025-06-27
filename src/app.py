@@ -24,9 +24,11 @@ def load_data():
     df_user = pd.read_sql("SELECT * FROM aggregated_user", engine)
     df_ins = pd.read_sql("SELECT * FROM aggregated_insurance", engine)
     df_map_tx = pd.read_sql("SELECT * FROM map_transaction", engine)
-    return df_tx, df_user, df_ins, df_map_tx
+    df_map_ins = pd.read_sql("SELECT * FROM map_insurance", engine)
+    df_top_tx = pd.read_sql("SELECT * FROM top_transaction", engine)
+    return df_tx, df_user, df_ins, df_map_tx, df_map_ins, df_top_tx
 
-df_tx, df_user, df_ins, df_map_tx = load_data()
+df_tx, df_user, df_ins, df_map_tx, df_map_ins, df_top_tx = load_data()
 
 # ------------------------ KPI Metrics ------------------------
 st.subheader(" Key Metrics")
@@ -42,9 +44,9 @@ st.markdown("---")
 # ------------------------ Graphs Layout ------------------------
 st.subheader("Data Visualizations")
 
-# 1. Transaction Amount by State
-fig1 = px.bar(df_tx.groupby("state")[["transaction_amount"]].sum().reset_index(),
-              x="state", y="transaction_amount", title="Transaction Amount by State",
+# 1. Transaction Amount by level
+fig1 = px.bar(df_top_tx.groupby("level")[["transaction_amount"]].sum().reset_index(),
+              x="level", y="transaction_amount", title="Transaction Amount by level",
               labels={"transaction_amount": "₹ Amount"})
 st.plotly_chart(fig1, use_container_width=True)
 
@@ -59,8 +61,8 @@ fig3 = px.bar(df_user.groupby("device_brand")[["user_count"]].sum().reset_index(
 st.plotly_chart(fig3, use_container_width=True)
 
 # 4. Insurance Premiums by State
-fig4 = px.bar(df_ins.groupby("state")[["insurance_amount"]].sum().reset_index().sort_values(by="insurance_amount", ascending=False).head(10),
-              x="state", y="insurance_amount", title="Top 10 States by Insurance Premiums")
+fig4 = px.bar(df_map_ins.groupby("state")[["amount"]].sum().reset_index().sort_values(by="amount", ascending=False).head(10),
+              x="state", y="amount", title="Top 10 States by Insurance Premiums")
 st.plotly_chart(fig4, use_container_width=True)
 
 # 5. Transaction Count by Category
@@ -88,7 +90,7 @@ fig9 = px.bar(df_tx.groupby("quarter")[["transaction_amount"]].sum().reset_index
               x="quarter", y="transaction_amount", title="Transaction Amount by Quarter")
 st.plotly_chart(fig9, use_container_width=True)
 
-# 10. Insurance Adoption (State-wise Count)
-fig10 = px.bar(df_ins.groupby("state")[["insurance_count"]].sum().reset_index().sort_values(by="insurance_count", ascending=False).head(10),
-               x="state", y="insurance_count", title="Top 10 States by Insurance Adoption")
-st.plotly_chart(fig10, use_container_width=True)
+# # 10. Insurance Adoption (State-wise Count)
+# fig10 = px.bar(df_ins.groupby("state")[["insurance_count"]].sum().reset_index().sort_values(by="insurance_count", ascending=False).head(10),
+#                x="state", y="insurance_count", title="Top 10 States by Insurance Adoption")
+# st.plotly_chart(fig10, use_container_width=True)
